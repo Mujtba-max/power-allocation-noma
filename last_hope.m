@@ -73,19 +73,20 @@ for s = 1:num_reals
     for c=1:NC
         for u=1:NU
             % Compute the intra-cell interference.
-            intra = HH(u, c, c)^2*sum(v_init(1:u-1, c).^2);
+            intra = abs(h(u, c, c, s)^2*sum(v_init(1:u-1, c).^2));
             
             %Compute the inter-cell interference.
             inter = 0;
             for k=1:NC
                 if k~=c
-                    temp = HH(u, c, k)^2*sum(v_init(:, k).^2);
+                    temp = h(u, c, c, s)*sum(v_init(:, k));
                     inter = inter + temp;
                 end
             end
+            inter = abs(inter);
             
-            g(u, c) = HH(u, c, c)*v_init(u, c)/(HH(u, c, c)^2 * v_init(u, c)^2 +inter+intra+nvar);
-            w(u, c) = 1/((g(u, c)*HH(u, c, c)*v_init(u, c)-1)^2+g(u, c).^2*(inter+intra+nvar));
+            g(u, c) = h(u, c, c, s)*v_init(u, c)/(abs(h(u, c, c, s) * v_init(u, c))^2 + inter + intra + nvar);
+            w(u, c) = 1/(abs(g(u, c)* h(u, c, c, s)*v_init(u, c)-1)^2 + abs(g(u, c))^2*(inter+intra+nvar));
             A(u, c) = alpha(u, c) * w(u, c) * g(u, c);
         end
     end
@@ -98,6 +99,7 @@ for s = 1:num_reals
         WR_vs_iter(s, iter, alpha_idx)= sum(Wrate(NC, NU, HH, vs, alpha, nvar), 'all'); % the sum weighted rate
         ppp(s, iter) = vs(1, 1); % ???
 
+        % update what follows for the complex v !!!
         for c = 1:NC
             inter = 0;
             for k=1:NC

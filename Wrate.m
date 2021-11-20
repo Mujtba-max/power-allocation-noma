@@ -1,3 +1,5 @@
+% Please update this for the complex v !!!
+
 function R = Wrate(NC, NU, H, v, alpha, nvar)
 R = zeros(NU, NC);
 for c = 1:NC
