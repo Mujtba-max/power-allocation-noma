@@ -8,12 +8,13 @@ epsilon = 1e-5; % For convergence test.
 inner_radius = 500; 
 minR_ratio = 0.01;
 numIter = 2000;
-num_reals = 1000;
-alpha_rng = 1:10;
+num_reals = 1000; %# of channel realizations
+alpha_rng = 1:10; % the range of the alpha computation indices
 seed = 1;
 
+% system model
+% Load the presaved channel parameters.
 fileName = sprintf('channels_for_NU_fixed/Channels%dx%dpower%d.mat', NC, NU, P);
-% fileName = sprintf('Channels%dx%d.mat', NC, NU);
 load(fileName,'H', 'in', 'D'); 
 last_hope
 

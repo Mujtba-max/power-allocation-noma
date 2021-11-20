@@ -1,25 +1,9 @@
-% clear; close all;
-% 
-% NC = 5; % #Cells which equals #BSs
-% NU = 3; % #USers in each cell.
-% P = 16;
-% nvar = 1.9905e-08; % Noise Variance ?????
-% epsilon = 1e-5; % For convergence test.
-% inner_radius = 500; 
-% minR_ratio = 0.01;
-% numIter = 2000;
-% num_reals = 1000;
-% alpha_rng = 2;
-% seed = 1;
+% Apply the WMMSE algorithim. The parameters should be assigned earlier.
 
 Pmax = 10^(P/10); % Maximum power for each cell.
 Pm = Pmax*ones(1,NC);
 
-%system model
-% [h, ms, Cell] = generate_IBC_channel(NU, inner_radius, NC, minR_ratio, seed, 0);
-% fileName = sprintf('Channels%dx%d.mat', NC, NU);
-% load(fileName,'H', 'in', 'D'); 
-
+%% ???
 % n = zeros(1,NC);
 % for c=1:NC
 %     a = find(in(:,c)==1);
@@ -27,14 +11,12 @@ Pm = Pmax*ones(1,NC);
 % end
 % 
 % num_reals = min(n);
-
 % 
 % for c=1:NC
 %     a = find(in(:,c)==1);
 %     h(:,c,:,:) = H(:,c,:,a(1:num_reals));
 %     d(:,c,:,:) = D(:,c,:,a(1:num_reals));
 % end
-
 
 h = zeros(NU,NC,NC,num_reals);
 d = zeros(NU,NC,NC,num_reals);
@@ -66,44 +48,34 @@ conv= zeros(10,num_reals);
 for alpha_idx = alpha_rng
 Powers = zeros(NU,NC,num_reals);
 for s = 1:num_reals
-    
-%     disp(s)
+        
+    % print each 500 realizations
     if mod(s, 500) == 0
         to_disp = sprintf('%d. %d', P, s);
         disp(to_disp)
     end
-%     alpha = ones(NU,NC);
-    HH = abs(h(:,:,:,s));
-    dd = d(:,:,:,s);
+
+    HH = abs(h(:,:,:,s)); % the abs value of h for each channel realization
+    dd = d(:,:,:,s); % the distance for each channel realization
     
-    % Next, define weights
+    % Next, define weights. Compute alpha depending on alpha_idx.
     alpha = alpha_computation(HH, dd, NU, NC, alpha_idx);
-%     alpha = ones(NU, NC);
-%     for c=1:NC
-%         alpha_sum = 0;
-%         for u=1:NU
-% %             alpha(u,c) = u^2;
-% %             alpha(u,c) = (HH(u,c,c)/(sum(HH(u,c,:))-HH(u,c,c)))^-2;
-%             alpha(u,c) = (dd(u,c,c)/((sum(dd(u,c,:))-dd(u,c,c))))^2;
-%             alpha_sum = alpha_sum+alpha(u,c);
-%         end
-%         alpha(:,c) = alpha(:,c)/alpha_sum;
-%     end
 
-    g = ones(NC,NU)'; % Receivers' gains.
-    w = ones(NC,NU)'; % Weights in WMMSE.
-    A = zeros(NU, NC);
-    lambda = zeros(1, NC);
+    g = ones(NC,NU)';      % Receivers' gains.
+    w = ones(NC,NU)';      % Weights of the WMMSE problem.
+    A = zeros(NU, NC);     % An intermediate variable.
+    lambda = zeros(1, NC); % The Lagrange multipliers
 
-    % [P1max, P2max] = towUsersMaxPower(Pm, Ptol, h, NC);
-%     v_init = zeros(NU,NC); vs = zeros(NU,NC);
-%     v_init = sqrt(repmat(Pm,NU,1)./NU);
-    v_init = sqrt(Pmax*rand(NU,NC));
+    v_init = sqrt(Pmax*rand(NU,NC)); % Initialize v's randomly?
     vs = v_init;
-    % Calculating the corresponding values of g & w for all users.
+    
+    % Calculating the corresponding (initial ?) values of g & w for all users in all cells.
     for c=1:NC
         for u=1:NU
+            % Compute the intra-cell interference.
             intra = HH(u, c, c)^2*sum(v_init(1:u-1, c).^2);
+            
+            %Compute the inter-cell interference.
             inter = 0;
             for k=1:NC
                 if k~=c
@@ -111,23 +83,20 @@ for s = 1:num_reals
                     inter = inter + temp;
                 end
             end
+            
             g(u, c) = HH(u, c, c)*v_init(u, c)/(HH(u, c, c)^2 * v_init(u, c)^2 +inter+intra+nvar);
             w(u, c) = 1/((g(u, c)*HH(u, c, c)*v_init(u, c)-1)^2+g(u, c).^2*(inter+intra+nvar));
             A(u, c) = alpha(u, c) * w(u, c) * g(u, c);
         end
     end
 
-
     vnew = 0; vold = 0; iter=0;
-
     combination = zeros(1,2);
-    
-
     while(iter <= numIter)
         iter = iter+1;
-        R_vs_iter(s, iter, alpha_idx) = sum(rate(NC, NU, HH, vs, nvar), 'all');
-        WR_vs_iter(s, iter, alpha_idx)= sum(Wrate(NC, NU, HH, vs, alpha, nvar), 'all');
-        ppp(s, iter) = vs(1, 1);
+        R_vs_iter(s, iter, alpha_idx) = sum(rate(NC, NU, HH, vs, nvar), 'all'); % the sum rate
+        WR_vs_iter(s, iter, alpha_idx)= sum(Wrate(NC, NU, HH, vs, alpha, nvar), 'all'); % the sum weighted rate
+        ppp(s, iter) = vs(1, 1); % ???
 
         for c = 1:NC
             inter = 0;
@@ -186,7 +155,6 @@ for s = 1:num_reals
            break;
         end
 
-
         for c=1:NC
             for u=1:NU
                 intra = HH(u, c, c)^2*sum(vs(1:u-1, c).^2);
@@ -207,7 +175,6 @@ for s = 1:num_reals
      R_vs_iter(s, conv(alpha_idx, s)+1:end, alpha_idx) =  R_vs_iter(s, conv(alpha_idx, s), alpha_idx);
     WR_vs_iter(s, conv(alpha_idx, s)+1:end, alpha_idx) = WR_vs_iter(s, conv(alpha_idx, s), alpha_idx);
 
-%     vs = vs'; g = g'; w = w'; alpha = alpha'; v_init = v_init';
     R = rate(NC, NU, HH, vs, nvar);
     Rmax = rate(NC, NU, HH, v_init, nvar);
     
@@ -236,13 +203,10 @@ for s = 1:num_reals
     tdma_rates(s) = tdma_sum;
     
     Powers(:,:,s) = vs;
-    
-%     vs = vs'; g = g'; w = w'; alpha = alpha'; v_init = v_init';
-    
+        
 end
 
 % file_name = sprintf('WMMSE_for_powers_fixed/WMMSE_%dx%dpower%dalpha%d.mat', NC, NU, P, alpha_idx);
 % save(file_name, 'Powers', 'conv', 'R_sums', 'Rmax_sums', 'WR_sums', 'WRmax_sums', 'tdma_rates');
-
 
 end
