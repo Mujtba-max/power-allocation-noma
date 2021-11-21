@@ -73,19 +73,18 @@ for s = 1:num_reals
     for c=1:NC
         for u=1:NU
             % Compute the intra-cell interference.
-            intra = abs(h(u, c, c, s)^2*sum(v_init(1:u-1, c).^2));
+            intra = HH(u, c, c)^2*sum(abs(v_init(1:u-1, c)).^2);
             
             %Compute the inter-cell interference.
             inter = 0;
             for k=1:NC
                 if k~=c
-                    temp = h(u, c, c, s)*sum(v_init(:, k));
+                    temp =  HH(u, c, c)^2*sum(abs(v_init(:, k)).^2);
                     inter = inter + temp;
                 end
             end
-            inter = abs(inter);
             
-            g(u, c) = h(u, c, c, s)*v_init(u, c)/(abs(h(u, c, c, s) * v_init(u, c))^2 + inter + intra + nvar);
+            g(u, c) = conj(h(u, c, c, s)*v_init(u, c))/(abs(h(u, c, c, s) * v_init(u, c))^2 + inter + intra + nvar);
             w(u, c) = 1/(abs(g(u, c)* h(u, c, c, s)*v_init(u, c)-1)^2 + abs(g(u, c))^2*(inter+intra+nvar));
             A(u, c) = alpha(u, c) * w(u, c) * g(u, c);
         end
