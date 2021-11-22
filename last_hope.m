@@ -122,7 +122,7 @@ for s = 1:num_reals
             if compPower <= 0
                 combination(1) = combination(1) +1; % I don't know what is this :-)
             else
-                l = bisection(Pmax, A, HH, g, inter, c, NU); % Finding lambda using bisection search.
+                l = bisection(Pmax, A, h(:, :, :, s), g, inter, c, NU); % Finding lambda using bisection search.
                 if numel(l(l>=0)) > 1
                     error("numel(lambda(c))> 1");
                 end
