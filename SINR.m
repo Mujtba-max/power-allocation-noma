@@ -1,4 +1,5 @@
 function S = SINR(NC, NU, H, v, nvar)
+  % I think the dimentions here are old and reversed ! Does this function still in use?
 S = zeros(NC, NU);
 for c = 1:NC
   for i = 1:NU

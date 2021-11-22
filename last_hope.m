@@ -61,8 +61,8 @@ for s = 1:num_reals
     % Next, define weights. Compute alpha depending on alpha_idx.
     alpha = alpha_computation(HH, dd, NU, NC, alpha_idx);
 
-    g = ones(NC,NU)';      % Receivers' gains.
-    w = ones(NC,NU)';      % Weights of the WMMSE problem.
+    g = ones(NU, NC);      % Receivers' gains.
+    w = ones(NU, NC);      % Weights of the WMMSE problem.
     A = zeros(NU, NC);     % An intermediate variable.
     lambda = zeros(1, NC); % The Lagrange multipliers
 
