@@ -73,19 +73,18 @@ for s = 1:num_reals
     for c=1:NC
         for u=1:NU
             % Compute the intra-cell interference.
-            intra = HH(u, c, c)^2*sum(abs(v_init(1:u-1, c)).^2);
+            intra = HH(u, c, c)^2*sum(abs(vs(1:u-1, c)).^2);
             
             %Compute the inter-cell interference.
             inter = 0;
             for k=1:NC
                 if k~=c
-                    temp =  HH(u, c, c)^2*sum(abs(v_init(:, k)).^2);
-                    inter = inter + temp;
+                    inter +=  HH(u, c, k)^2*sum(abs(vs(:, k)).^2);
                 end
             end
             
-            g(u, c) = conj(h(u, c, c, s)*v_init(u, c))/(abs(h(u, c, c, s) * v_init(u, c))^2 + inter + intra + nvar);
-            w(u, c) = 1/(abs(g(u, c)* h(u, c, c, s)*v_init(u, c)-1)^2 + abs(g(u, c))^2*(inter+intra+nvar));
+            g(u, c) = conj(h(u, c, c, s)*vs(u, c))/(abs(h(u, c, c, s) * vs(u, c))^2 + inter + intra + nvar);
+            w(u, c) = 1/(abs(g(u, c)* h(u, c, c, s)*vs(u, c)-1)^2 + abs(g(u, c))^2*(inter+intra+nvar));
             A(u, c) = alpha(u, c) * w(u, c) * g(u, c);
         end
     end
@@ -99,28 +98,30 @@ for s = 1:num_reals
         ppp(s, iter) = vs(1, 1); % ???
 
         % update what follows for the complex v !!!
+        
+        % This loop is to compute the v's for each cell
         for c = 1:NC
+            
+            % Compute the intercell interference for the v-equation
             inter = 0;
             for k=1:NC
                 if k~=c
-                    temp = sum(g(:, k).*A(:, k) .*HH(:, k, c).^2);
-                    inter = inter + temp;
+                    inter += sum(A(:, k) .* conj(g(:, k)) .*HH(:, k, c).^2);
                 end
             end
 
-            for j=1 
-
-                for u=1:NU
-                    vs(u,c) = A(u, c) * HH(u, c, c)/(sum(g(u+1:NU, c).*A(u+1:NU, c).*HH(u+1:NU,c,c).^2) + inter);
-                end
-                compPower = sum(vs(:,c).^2) - Pm(c);
-                if compPower <= 0
-                    combination(1) = combination(1) +1;
-                    break;
-                end
-                
-                %%%%%%%%%%%%%%%%
-
+            % compute the total power and check if it is less or equal to the maximum power.
+            % If the power budget constraint is satisfied, then this value of v is correct and lambda = 0.
+            % Else, compute the value of lambda and then compute v according to it.
+            
+            for u=1:NU
+                vs(u,c) = conj( A(u, c) * h(u, c, c, s) ) / (sum(A(u:NU, c) .* conj(g(u:NU, c)).*HH(u:NU,c,c).^2) + inter);
+            end
+            compPower = sum(abs(vs(:,c)).^2) - Pm(c); % must be <= 0, for lambda = 0.
+            
+            if compPower <= 0
+                combination(1) = combination(1) +1; % I don't know what is this :-)
+            else
                 l = bisection(Pmax, A, HH, g, inter, c, NU); % Finding lambda using bisection search.
                 if numel(l(l>=0)) > 1
                     error("numel(lambda(c))> 1");
@@ -129,46 +130,45 @@ for s = 1:num_reals
                     "there is no lambda that satisfies the KKT conditions for this iteration and this cell." %%???
                     error("numel(lambda(c))== 0");
                 end
+                
                 lambda(c) = l(l>=0);
-
                 for u=1:NU
-                    vs(u,c) = A(u, c) * HH(u, c, c)/(sum(g(u+1:NU, c).*A(u+1:NU, c).*HH(u+1:NU,c,c).^2)+ inter + lambda(c));
+                    vs(u,c) = conj( A(u, c) * h(u, c, c, s) ) / (sum(A(u:NU, c) .* conj(g(u:NU, c)).*HH(u:NU,c,c).^2) + inter + lambda(c));
                 end
 
-                compPower = sum(vs(:,c).^2) - Pm(c) ;       % <= 0
-
-                if abs(compPower) > 1e-7
+                compPower = sum(abs(vs(:,c)).^2) - Pm(c) ; % <= 0
+                if abs(compPower) > 1e-7 % why  1e-7 ??
                     error("the solution of the quatric equation is wrong!");
                 end
 
-                combination(2) = combination(2) +1;
-                break;
-
-
+                combination(2) = combination(2) +1; % I have no idea :-)
             end
-
         end
 
+        % check if the algorithm comverges.
         vold = vnew;
         vnew = sum(log2(w),'all');
         if vnew-vold < epsilon
            conv(alpha_idx, s) = iter;
            break;
         end
-
+        
+        % Compute g and w.
         for c=1:NC
             for u=1:NU
-                intra = HH(u, c, c)^2*sum(vs(1:u-1, c).^2);
-                inter = 0;
-                for k=1:NC
-                    if k~=c
-                        temp = HH(u, c, k)^2*sum(vs(:, k).^2);
-                        inter = inter + temp;
-                    end
+              intra = HH(u, c, c)^2*sum(abs(vs(1:u-1, c)).^2);
+            
+            %Compute the inter-cell interference.
+            inter = 0;
+            for k=1:NC
+                if k~=c
+                    inter +=  HH(u, c, k)^2*sum(abs(vs(:, k)).^2);
                 end
-                g(u, c) = HH(u, c, c) * vs(u, c)/(HH(u, c, c)^2 * vs(u, c)^2 +inter+intra+nvar);
-                w(u, c) = 1/((g(u, c)*HH(u, c, c)*vs(u, c)-1)^2+g(u, c).^2*(inter+intra+nvar));
-                A(u, c) = alpha(u, c) * w(u, c) * g(u, c);
+            end
+            
+            g(u, c) = conj(h(u, c, c, s)*vs(u, c))/(abs(h(u, c, c, s) * vs(u, c))^2 + inter + intra + nvar);
+            w(u, c) = 1/(abs(g(u, c)* h(u, c, c, s)*vs(u, c)-1)^2 + abs(g(u, c))^2*(inter+intra+nvar));
+            A(u, c) = alpha(u, c) * w(u, c) * g(u, c);
             end
         end
     end
@@ -177,15 +177,15 @@ for s = 1:num_reals
     WR_vs_iter(s, conv(alpha_idx, s)+1:end, alpha_idx) = WR_vs_iter(s, conv(alpha_idx, s), alpha_idx);
 
     R = rate(NC, NU, HH, vs, nvar);
-    Rmax = rate(NC, NU, HH, v_init, nvar);
+    Rmax = rate(NC, NU, HH, vs, nvar);
     
     WR = Wrate(NC, NU, HH, vs, alpha, nvar);
-    WRmax = Wrate(NC, NU, HH, v_init, alpha, nvar);
+    WRmax = Wrate(NC, NU, HH, vs, alpha, nvar);
     
     tdma_rate = tdmaRates(NC,NU,HH,alpha,Pmax,nvar);
 
 %     MSE    = MMSE(NC, NU, HH, vs, alpha, g, w, nvar);
-%     MSE_max = MMSE(NC, NU, HH, v_init, alpha, g, w, nvar);
+%     MSE_max = MMSE(NC, NU, HH, vs, alpha, g, w, nvar);
 
     R_sum    = sum(R   , 'all');
     Rmax_sum = sum(Rmax, 'all');
