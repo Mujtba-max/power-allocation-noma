@@ -1,4 +1,4 @@
-function [H, D, MS, Cell] = generate_IBC_channel_fixed(Num_of_user_in_each_cell, inner_radius, Num_of_cell, minR_ratio,seed, d, t ,plot_flag)
+function [H, D, MS, Cell] = generate_IBC_channel(Num_of_user_in_each_cell, inner_radius, Num_of_cell, minR_ratio,seed, d, t ,plot_flag)
 % Generate Num_of_users*Num_of_users interference channel
 % Num_of_cell cells, each with Num_of_user_in_each_cell user
 rng(seed);

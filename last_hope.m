@@ -1,9 +1,11 @@
-% Apply the WMMSE algorithim. The parameters should be assigned earlier.
+% Apply the WMMSE algorithim AND SAVE THE RESULTS TO FILE!!, BE CAREFULL!
+% The parameters should be assigned earlier.
 
 Pmax = 10^(P/10); % Maximum power for each cell.
 Pm = Pmax*ones(1,NC);
 
-%% ???
+    %%%%% Ali from the future: What are these comments below???
+    
 % n = zeros(1,NC);
 % for c=1:NC
 %     a = find(in(:,c)==1);
@@ -207,7 +209,7 @@ for s = 1:num_reals
         
 end
 
-% file_name = sprintf('WMMSE_for_powers_fixed/WMMSE_%dx%dpower%dalpha%d.mat', NC, NU, P, alpha_idx);
-% save(file_name, 'Powers', 'conv', 'R_sums', 'Rmax_sums', 'WR_sums', 'WRmax_sums', 'tdma_rates');
+file_name = sprintf('WMMSE_for_powers/WMMSE_%dx%dpower%dalpha%d.mat', NC, NU, P, alpha_idx);
+save(file_name, 'Powers', 'conv', 'R_sums', 'Rmax_sums', 'WR_sums', 'WRmax_sums', 'tdma_rates');
 
 end

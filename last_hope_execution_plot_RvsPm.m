@@ -11,18 +11,11 @@ alpha_rng = [1, alpha_rng_length];
 P_max_idx = 20;
 seed = 1;
 
-% 
-% for P=0:P_max_idx
-%     clear H  in D;
-%     fileName = sprintf('channels_for_powers_fixed/Channels%dx%dpower%d.mat', NC, NU, P);
-%     load(fileName,'H', 'in', 'D'); 
-%     last_hope
-% end
-
 clear RR RR_max tdma WRR WRR_max convv;
+
 %%% I replaced every 10 with alpha_rng_length down here ! Did I get it wrong?
-RR = zeros(alpha_rng_length, P_max_idx+1);
-RR_max = zeros(alpha_rng_length, P_max_idx+1);
+RR = zeros(alpha_rng_length, P_max_idx+1); % The average rate for the WMMSE NOMA
+RR_max = zeros(alpha_rng_length, P_max_idx+1); % The average rate for the fixed NOMA, and so on.
 WRR = zeros(alpha_rng_length, P_max_idx+1);
 WRR_max = zeros(alpha_rng_length, P_max_idx+1);
 tdma = zeros(alpha_rng_length, P_max_idx+1);
@@ -30,8 +23,18 @@ fdma = zeros(alpha_rng_length, P_max_idx+1);
 convv = zeros(alpha_rng_length, P_max_idx+1); 
 for alpha_idx = alpha_rng
     for P = 1:P_max_idx+1
-        file_name = sprintf('WMMSE_for_powers_fixed/WMMSE_%dx%dpower%dalpha%d.mat', NC, NU,P-1, alpha_idx);
-        load(file_name, 'Powers', 'conv', 'R_sums', 'Rmax_sums', 'WR_sums', 'WRmax_sums', 'tdma_rates');
+        file_name = sprintf('WMMSE_for_powers/WMMSE_%dx%dpower%dalpha%d.mat', NC, NU,P-1, alpha_idx);
+        
+        % check if the file exists, if not, execute lase_hope and save the parameters into the file.
+        if isfile(file_name)
+            % File exists.
+            load(file_name, 'Powers', 'conv', 'R_sums', 'Rmax_sums', 'WR_sums', 'WRmax_sums', 'tdma_rates');
+        else
+           clear H  in D;
+           fileName = sprintf('channels_for_powers/Channels%dx%dpower%d.mat', NC, NU, P-1);
+           load(fileName,'H', 'in', 'D'); 
+           last_hope
+        end
 
         % here we are taking the mean of the rates?
         RR(alpha_idx,P) = mean(R_sums);
@@ -44,9 +47,14 @@ for alpha_idx = alpha_rng
             load(file_name,'tdma_rates'); % ???
             fdma(alpha_idx, P) = mean(tdma_rates);
         end
+        
+            %%%%% Ali from the future: What are these comments below???
+
         % PP(:, :, P) = mean(Powers, 3);
 %         convv(alpha_idx, P) = mean(conv); 
     end
+        
+            %%%%% Ali from the future: What are these comments below???
 
 %     plot(0:20, RR);
 %     hold on;
@@ -76,6 +84,14 @@ ylabel('Sum rate (bits/s/Hz)', 'FontSize', 15);
 legend('uniformly-distributed-alpha WMMSE', 'distance-based-alpha WMMSE', 'uniform power allocation', 'OMA', 'FontSize', 15);
 
 
+function [] = execute_last_hope()
+    clear H in D; % clear the variables H, in, and D.
+    fileName = sprintf('channels_for_NU_fixed/Channels%dx%dpower%d.mat', NC, NU, P);
+    load(fileName,'H', 'in', 'D'); 
+    last_hope
+end
+
+              %%%%% Ali from the future: What are these comments below???
 
 % lgnd = cell(7, 3);
 % for alpha_idx = 1:2:7

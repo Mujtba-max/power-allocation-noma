@@ -15,7 +15,7 @@ seed = 1;
 
 % system model
 % Load the presaved channel parameters.
-fileName = sprintf('channels_for_NU_fixed/Channels%dx%dpower%d.mat', NC, NU, P);
+fileName = sprintf('channels_for_NU/Channels%dx%dpower%d.mat', NC, NU, P);
 load(fileName,'H', 'in', 'D'); 
 last_hope
 

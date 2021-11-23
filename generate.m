@@ -1,16 +1,17 @@
-NC = 4; NU = 3; NS = 10^4;
-inner_radius = 500; minR_ratio = 0.01; seed = 1;
-% Pm = 10^1.6; 
-Pmax = 16; % dBw
-nvar_dBm = 10^-17.4; %1.9905e-08
-BW = 5 * 10^6;
-nvar = nvar_dBm * 10^-3 * BW; % linear scale
-rng(seed);
-    Pm = 10^(Pmax/10);
-    tic;
+% This file is to generate and save channels that satisfy the SIC sufficient condition ???
 
-for NC = 4
-for NU = 10
+NS = 10^4;
+inner_radius = 500; minR_ratio = 0.01; seed = 1;
+Pmax = 16; % dBw
+nvar_dBm = -147;
+BW = 10 * 10^6;
+nvar = 10^(nvar_dBm/10) * 10^-3 * BW; % linear scale (Watts)
+rng(seed);
+Pm = 10^(Pmax/10);
+tic;
+
+for NC = 4:6
+for NU = 2:20
 %     Pm = 10^(Pmax/10);
     disp(Pmax);
     A = zeros(NC,NU,2,NS);
@@ -24,19 +25,21 @@ for NU = 10
         end               
     end
     
+    %%%%% Ali from the future: What are these comments below???
 %     for c = 1:NC
 %         for u = 1:NU
 %             A(c,u,1,:) = min(inner_radius,inner_radius*rand(1,NS) + minR_ratio*inner_radius);
 %             A(c,u,2,:) = 2*pi*rand(1,NS);
 %         end
 %     end
+
     A = permute(A, [4,2,3,1]);
     H = zeros(NU,NC,NC,NS);
     D = zeros(NU,NC,NC,NS);
     in = ones(NS, NC);
 
     for s=1:NS
-        [h, distances, ms, Cell] = generate_IBC_channel_fixed(NU, inner_radius, NC, minR_ratio, seed, squeeze(A(s,:,1,:)), squeeze(A(s,:,2,:)), 0);
+        [h, distances, ms, Cell] = generate_IBC_channel(NU, inner_radius, NC, minR_ratio, seed, squeeze(A(s,:,1,:)), squeeze(A(s,:,2,:)), 0);
         H(:,:,:,s) = h;
         D(:,:,:,s) = distances;
         p = test(NC, NU, inner_radius, minR_ratio,h, Pm, nvar, seed);
@@ -47,6 +50,9 @@ for NU = 10
             end
         end
     end
+    
+                  %%%%% Ali from the future: What are these comments below???
+    
      % if there is a cell that doesn't satisfy the sufficient condition:
 %      for c = 1:NC
 %          if sum(in(:, c), 1) == 0
@@ -70,8 +76,8 @@ for NU = 10
 %          end
 %      end
     
-%     file_name = sprintf('channels_for_NU_fixed/Channels%dx%dpower%d.mat', NC, NU, Pmax);
-%     save(file_name, 'H', 'in','D', nvar);
+    file_name = sprintf('channels_for_NU/Channels%dx%dpower%d.mat', NC, NU, Pmax);
+    save(file_name, 'H', 'in','D', 'nvar');
     toc;
 end
 end
@@ -80,7 +86,7 @@ end
 
 
 
-
+              %%%%% Ali from the future: What are these comments below???
 
 % n = zeros(1,NC);
 % for c=1:NC
