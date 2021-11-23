@@ -39,11 +39,11 @@ for c=1:NC
         h(:,c,:,:) = H(:, c, :, cell_indecies(1:num_reals)); d(:,c,:,:) = D(:, c, :, cell_indecies(1:num_reals));
     end
 end
-R_vs_iter = zeros(num_reals, numIter, 10);
-WR_vs_iter= zeros(num_reals, numIter, 10);
+R_vs_iter = zeros(num_reals, numIter, alpha_rng_length);
+WR_vs_iter= zeros(num_reals, numIter, alpha_rng_length);
 ppp = zeros(num_reals, numIter);
 
-conv= zeros(10,num_reals);
+conv= zeros(alpha_rng_length,num_reals);
  
 for alpha_idx = alpha_rng
 Powers = zeros(NU,NC,num_reals);
@@ -177,15 +177,15 @@ for s = 1:num_reals
     WR_vs_iter(s, conv(alpha_idx, s)+1:end, alpha_idx) = WR_vs_iter(s, conv(alpha_idx, s), alpha_idx);
 
     R = rate(NC, NU, HH, vs, nvar);
-    Rmax = rate(NC, NU, HH, vs, nvar);
+    Rmax = rate(NC, NU, HH, v_init, nvar); % what is this?
     
     WR = Wrate(NC, NU, HH, vs, alpha, nvar);
-    WRmax = Wrate(NC, NU, HH, vs, alpha, nvar);
+    WRmax = Wrate(NC, NU, HH, v_init, alpha, nvar);% what is this?
     
     tdma_rate = tdmaRates(NC,NU,HH,alpha,Pmax,nvar);
 
 %     MSE    = MMSE(NC, NU, HH, vs, alpha, g, w, nvar);
-%     MSE_max = MMSE(NC, NU, HH, vs, alpha, g, w, nvar);
+%     MSE_max = MMSE(NC, NU, HH, v_init, alpha, g, w, nvar);
 
     R_sum    = sum(R   , 'all');
     Rmax_sum = sum(Rmax, 'all');

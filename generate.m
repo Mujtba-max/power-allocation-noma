@@ -2,8 +2,9 @@ NC = 4; NU = 3; NS = 10^4;
 inner_radius = 500; minR_ratio = 0.01; seed = 1;
 % Pm = 10^1.6; 
 Pmax = 16; % dBw
-nvar = 10^-17.4; %1.9905e-08
-nvar = (10^-17.4) * 10^-3 * 5 * 10^6;
+nvar_dBm = 10^-17.4; %1.9905e-08
+BW = 5 * 10^6;
+nvar = nvar_dBm * 10^-3 * BW; % linear scale
 rng(seed);
     Pm = 10^(Pmax/10);
     tic;
@@ -70,7 +71,7 @@ for NU = 10
 %      end
     
 %     file_name = sprintf('channels_for_NU_fixed/Channels%dx%dpower%d.mat', NC, NU, Pmax);
-%     save(file_name, 'H', 'in','D');
+%     save(file_name, 'H', 'in','D', nvar);
     toc;
 end
 end

@@ -1,5 +1,6 @@
 % convergence plot
 
+alpha_rng_length = 10; % number of alpha values to compute.
 NC = 4; % #Cells which equals #BSs
 NU = 10; % #USers in each cell.
 P = 16;
@@ -9,7 +10,7 @@ inner_radius = 500;
 minR_ratio = 0.01;
 numIter = 2000;
 num_reals = 1000; %# of channel realizations
-alpha_rng = 1:10; % the range of the alpha computation indices
+alpha_rng = 1:alpha_rng_length; % the range of the alpha computation indices
 seed = 1;
 
 % system model

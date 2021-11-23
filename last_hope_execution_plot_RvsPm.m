@@ -1,3 +1,4 @@
+alpha_rng_length = 10; % number of alpha values to compute.
 NC = 4; % #Cells which equals #BSs
 NU = 10; % #USers in each cell.
 nvar = 1.9905e-08; % Noise Variance ?????
@@ -6,7 +7,7 @@ inner_radius = 500;
 minR_ratio = 0.01;
 numIter = 2000;
 num_reals = 1000;
-alpha_rng = [1, 10];
+alpha_rng = [1, alpha_rng_length];
 P_max_idx = 20;
 seed = 1;
 
@@ -19,18 +20,20 @@ seed = 1;
 % end
 
 clear RR RR_max tdma WRR WRR_max convv;
-RR = zeros(10, P_max_idx+1);
-RR_max = zeros(10, P_max_idx+1);
-WRR = zeros(10, P_max_idx+1);
-WRR_max = zeros(10, P_max_idx+1);
-tdma = zeros(10, P_max_idx+1);
-fdma = zeros(10, P_max_idx+1);
-convv = zeros(10, P_max_idx+1); 
+%%% I replaced every 10 with alpha_rng_length down here ! Did I get it wrong?
+RR = zeros(alpha_rng_length, P_max_idx+1);
+RR_max = zeros(alpha_rng_length, P_max_idx+1);
+WRR = zeros(alpha_rng_length, P_max_idx+1);
+WRR_max = zeros(alpha_rng_length, P_max_idx+1);
+tdma = zeros(alpha_rng_length, P_max_idx+1);
+fdma = zeros(alpha_rng_length, P_max_idx+1);
+convv = zeros(alpha_rng_length, P_max_idx+1); 
 for alpha_idx = alpha_rng
     for P = 1:P_max_idx+1
         file_name = sprintf('WMMSE_for_powers_fixed/WMMSE_%dx%dpower%dalpha%d.mat', NC, NU,P-1, alpha_idx);
         load(file_name, 'Powers', 'conv', 'R_sums', 'Rmax_sums', 'WR_sums', 'WRmax_sums', 'tdma_rates');
 
+        % here we are taking the mean of the rates?
         RR(alpha_idx,P) = mean(R_sums);
         RR_max(alpha_idx, P) = mean(Rmax_sums);
         WRR(alpha_idx, P) = mean(WR_sums);
@@ -38,7 +41,7 @@ for alpha_idx = alpha_rng
         tdma(alpha_idx, P) = mean(tdma_rates);
         if (mod(alpha_idx,2) == 1)
             file_name = sprintf('OMA_for_powers/OMA_%dx%dpower%dalpha%d.mat', NC, NU,P-1, alpha_idx);
-            load(file_name,'tdma_rates');
+            load(file_name,'tdma_rates'); % ???
             fdma(alpha_idx, P) = mean(tdma_rates);
         end
         % PP(:, :, P) = mean(Powers, 3);
