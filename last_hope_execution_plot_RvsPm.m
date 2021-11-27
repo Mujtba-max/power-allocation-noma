@@ -83,15 +83,15 @@ ylabel('Sum rate (bits/s/Hz)', 'FontSize', 15);
 
 legend('uniformly-distributed-alpha WMMSE', 'distance-based-alpha WMMSE', 'uniform power allocation', 'OMA', 'FontSize', 15);
 
-
-function [] = execute_last_hope()
-    clear H in D; % clear the variables H, in, and D.
-    fileName = sprintf('channels_for_NU_fixed/Channels%dx%dpower%d.mat', NC, NU, P);
-    load(fileName,'H', 'in', 'D'); 
-    last_hope
-end
-
-              %%%%% Ali from the future: What are these comments below???
+% 
+% function [] = execute_last_hope()
+%     clear H in D; % clear the variables H, in, and D.
+%     fileName = sprintf('channels_for_NU_fixed/Channels%dx%dpower%d.mat', NC, NU, P);
+%     load(fileName,'H', 'in', 'D'); 
+%     last_hope
+% end
+% 
+%               %%%%% Ali from the future: What are these comments below???
 
 % lgnd = cell(7, 3);
 % for alpha_idx = 1:2:7

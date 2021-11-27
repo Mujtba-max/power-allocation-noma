@@ -81,7 +81,7 @@ for s = 1:num_reals
             inter = 0;
             for k=1:NC
                 if k~=c
-                    inter +=  HH(u, c, k)^2*sum(abs(vs(:, k)).^2);
+                    inter = inter + HH(u, c, k)^2*sum(abs(vs(:, k)).^2);
                 end
             end
             
@@ -108,7 +108,7 @@ for s = 1:num_reals
             inter = 0;
             for k=1:NC
                 if k~=c
-                    inter += sum(A(:, k) .* conj(g(:, k)) .*HH(:, k, c).^2);
+                    inter = inter + sum(A(:, k) .* conj(g(:, k)) .*HH(:, k, c).^2);
                 end
             end
 
@@ -164,7 +164,7 @@ for s = 1:num_reals
             inter = 0;
             for k=1:NC
                 if k~=c
-                    inter +=  HH(u, c, k)^2*sum(abs(vs(:, k)).^2);
+                    inter = inter + HH(u, c, k)^2*sum(abs(vs(:, k)).^2);
                 end
             end
             
@@ -175,8 +175,8 @@ for s = 1:num_reals
         end
     end
     
-     R_vs_iter(s, conv(alpha_idx, s)+1:end, alpha_idx) =  R_vs_iter(s, conv(alpha_idx, s), alpha_idx);
-    WR_vs_iter(s, conv(alpha_idx, s)+1:end, alpha_idx) = WR_vs_iter(s, conv(alpha_idx, s), alpha_idx);
+%      R_vs_iter(s, conv(alpha_idx, s)+1:end, alpha_idx) =  R_vs_iter(s, conv(alpha_idx, s), alpha_idx);
+%     WR_vs_iter(s, conv(alpha_idx, s)+1:end, alpha_idx) = WR_vs_iter(s, conv(alpha_idx, s), alpha_idx);
 
     R = rate(NC, NU, HH, vs, nvar);
     Rmax = rate(NC, NU, HH, v_init, nvar); % what is this?
