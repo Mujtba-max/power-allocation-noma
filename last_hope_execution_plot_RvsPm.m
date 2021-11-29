@@ -43,8 +43,8 @@ for alpha_idx = alpha_rng
         WRR_max(alpha_idx, P) = mean(WRmax_sums);
         tdma(alpha_idx, P) = mean(tdma_rates);
         if (mod(alpha_idx,2) == 1)
-            file_name = sprintf('OMA_for_powers/OMA_%dx%dpower%dalpha%d.mat', NC, NU,P-1, alpha_idx);
-            load(file_name,'tdma_rates'); % ???
+%             file_name = sprintf('OMA_for_powers/OMA_%dx%dpower%dalpha%d.mat', NC, NU,P-1, alpha_idx);
+%             load(file_name,'tdma_rates'); % ???
             fdma(alpha_idx, P) = mean(tdma_rates);
         end
         
