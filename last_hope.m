@@ -45,7 +45,10 @@ R_vs_iter = zeros(num_reals, numIter, alpha_rng_length);
 WR_vs_iter= zeros(num_reals, numIter, alpha_rng_length);
 ppp = zeros(num_reals, numIter);
 
-conv= zeros(alpha_rng_length,num_reals);
+% The (numIter -1) scalling factor is for the case where the convergence
+% condition not satisfied, so this channel takes the maximum number of
+% iterations (minus 1, to avoid errors after the while loop).
+conv= (numIter -1) * ones(alpha_rng_length,num_reals);
  
 for alpha_idx = alpha_rng
 Powers = zeros(NU,NC,num_reals);
@@ -175,8 +178,8 @@ for s = 1:num_reals
         end
     end
     
-%      R_vs_iter(s, conv(alpha_idx, s)+1:end, alpha_idx) =  R_vs_iter(s, conv(alpha_idx, s), alpha_idx);
-%     WR_vs_iter(s, conv(alpha_idx, s)+1:end, alpha_idx) = WR_vs_iter(s, conv(alpha_idx, s), alpha_idx);
+     R_vs_iter(s, conv(alpha_idx, s)+1:end, alpha_idx) =  R_vs_iter(s, conv(alpha_idx, s), alpha_idx);
+    WR_vs_iter(s, conv(alpha_idx, s)+1:end, alpha_idx) = WR_vs_iter(s, conv(alpha_idx, s), alpha_idx);
 
     R = rate(NC, NU, HH, vs, nvar);
     Rmax = rate(NC, NU, HH, v_init, nvar); % what is this?
@@ -208,8 +211,11 @@ for s = 1:num_reals
     Powers(:,:,s) = vs;
         
 end
-
-file_name = sprintf('WMMSE_for_powers/WMMSE_%dx%dpower%dalpha%d.mat', NC, NU, P, alpha_idx);
-save(file_name, 'Powers', 'conv', 'R_sums', 'Rmax_sums', 'WR_sums', 'WRmax_sums', 'tdma_rates');
+% file_name = sprintf('WMMSE_for_powers/WMMSE_%dx%dpower%dalpha%d.mat', NC, NU, P, alpha_idx);
+% save(file_name, 'Powers', 'conv', 'R_sums', 'Rmax_sums', 'WR_sums', 'WRmax_sums', 'tdma_rates');
 
 end
+
+% file_name = sprintf('WMMSE_for_conv/WMMSE_%dx%dpower%d.mat', NC, NU,P);
+% save(file_name, "conv", "WR_vs_iter", "R_vs_iter");
+

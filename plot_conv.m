@@ -6,14 +6,22 @@ function [] = plot_conv(alpha_rng, conv, WR_vs_iter)
   S = zeros(1, 10);
   for alpha_idx = alpha_rng
     % find the sample corresponds to the average number of iterations for each alpha:
-    NIter(alpha_idx) = max(conv(alpha_idx, :));
-    [~,S(alpha_idx)]=min(abs(conv(alpha_idx, :) - NIter(alpha_idx))); %S is the sample which takes the average number of iterations for the algorithm to converge.
+%     NIter(alpha_idx) = max(conv(alpha_idx, :));
+%     [~,S(alpha_idx)] = min(abs(conv(alpha_idx, :) - NIter(alpha_idx))); %S is the sample which takes the average number of iterations for the algorithm to converge.
+  
+    NIter(alpha_idx) = mean(conv(alpha_idx, :)); % avg number of iterations.
+    % compute the index that corresponds to the value which is the closest
+    % to the avg number of iterations.
+    [~, S(alpha_idx)]= min(abs(conv(alpha_idx, :) - NIter(alpha_idx).'))
+    NIter(alpha_idx) = conv(alpha_idx, S(alpha_idx))
   end
+  
   maxNIter = max(NIter);
-  markers = 'm<-bo-';
+  markers = 'm<-bo-'; % شنهي هاي
+%   maxNIter = max(conv(alpha_idx, S(S>0)))
   figure; hold on; grid on;
-    plot(0:maxNIter/2, WR_vs_iter(S(1), 1:maxNIter/2+1, 1), 'm<-', 'linewidth', 2)
-    plot(0:maxNIter/2, WR_vs_iter(S(10), 1:maxNIter/2+1, 10), 'ro-','linewidth', 2)
+  	  plot(0:maxNIter/2, WR_vs_iter(S(1 ), 1:maxNIter/2+1, 1), 'm<-', 'linewidth', 2)
+      plot(0:maxNIter/2, WR_vs_iter(S(10), 1:maxNIter/2+1, 10), 'ro-', 'linewidth', 2)
 %     plot(0:maxNIter/2, WR_vs_iter(S(3), 1:maxNIter/2+1, 3), 'b<-', 'linewidth', 1)
 %     plot(0:maxNIter/2, WR_vs_iter(S(4), 1:maxNIter/2+1, 4), 'ko-','linewidth', 1)
 %     plot(0:maxNIter/2, WR_vs_iter(S(5), 1:maxNIter/2+1, 5), 'g<-', 'linewidth', 1)
@@ -25,9 +33,9 @@ function [] = plot_conv(alpha_rng, conv, WR_vs_iter)
     
 
 
-
-plot(0:20, RR_max(1, :), 'ks-.', 'linewidth',2);
-plot(0:20, tdma(1, :), 'gd--', 'linewidth',2);
+% What are these plots for? 
+% plot(0:20, RR_max(1, :), 'ks-.', 'linewidth',2);
+% plot(0:20, tdma(1, :), 'gd--', 'linewidth',2);
   
   xlabel("number of iterations", 'FontSize', 15);
   ylabel("Weighted sum rate", 'FontSize', 15);
