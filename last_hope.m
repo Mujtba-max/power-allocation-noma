@@ -153,7 +153,7 @@ for s = 1:num_reals
         % check if the algorithm comverges.
         vold = vnew;
         vnew = sum(log2(w),'all');
-        if vnew-vold < epsilon
+        if abs(vnew-vold) < epsilon
            conv(alpha_idx, s) = iter;
            break;
         end
@@ -216,6 +216,6 @@ end
 
 end
 
-% file_name = sprintf('WMMSE_for_conv/WMMSE_%dx%dpower%d.mat', NC, NU,P);
-% save(file_name, "conv", "WR_vs_iter", "R_vs_iter");
+file_name = sprintf('WMMSE_for_conv/WMMSE_%dx%dpower%dabs.mat', NC, NU,P);
+save(file_name, "conv", "WR_vs_iter", "R_vs_iter");
 

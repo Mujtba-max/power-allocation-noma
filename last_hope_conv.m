@@ -19,7 +19,7 @@ seed = 1;
 % load(fileName,'H', 'in', 'D'); 
 % last_hope
 %%
-file_name = sprintf('WMMSE_for_conv/WMMSE_%dx%dpower%d.mat', NC, NU,P);
+file_name = sprintf('WMMSE_for_conv/WMMSE_%dx%dpower%dabs.mat', NC, NU,P);
 load(file_name, "conv", "WR_vs_iter");
 
 plot_conv(alpha_rng, conv, WR_vs_iter);
