@@ -1,4 +1,4 @@
-NC = 4; % #Cells which equals #BSs
+alpha_rng_length = 10; % number of alpha values to compute.
 NU = 10; % #USers in each cell.
 nvar = 1.9905e-08; % Noise Variance ?????
 epsilon = 1e-5; % For convergence test.
@@ -6,7 +6,7 @@ inner_radius = 500;
 minR_ratio = 0.01;
 numIter = 2000;
 num_reals = 1000;
-alpha_rng = [1, 10];
+alpha_rng = [1, alpha_rng_length];
 P_max_idx = 20;
 seed = 1;
 
@@ -28,7 +28,7 @@ fdma = zeros(10, P_max_idx+1);
 convv = zeros(10, P_max_idx+1); 
 for alpha_idx = alpha_rng
     for P = 1:P_max_idx+1
-        file_name = sprintf('WMMSE_for_powers/WMMSE_%dx%dpower%dalpha%d.mat', NC, NU,P-1, alpha_idx);
+        file_name = sprintf('WMMSE_for_powers/WMMSE_%dx%dpower%dalpha%dabs.mat', NC, NU,P-1, alpha_idx);
         load(file_name, 'Powers', 'conv', 'R_sums', 'Rmax_sums', 'WR_sums', 'WRmax_sums', 'tdma_rates');
 
         RR(alpha_idx,P) = mean(R_sums);

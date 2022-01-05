@@ -50,13 +50,13 @@ ppp = zeros(num_reals, numIter);
 % iterations (minus 1, to avoid errors after the while loop).
 conv= (numIter -1) * ones(alpha_rng_length,num_reals);
  
-for alpha_idx = alpha_rng
+% for alpha_idx = alpha_rng
 Powers = zeros(NU,NC,num_reals);
 for s = 1:num_reals
         
     % print each 500 realizations
     if mod(s, 500) == 0
-        to_disp = sprintf('%d. %d', P, s);
+        to_disp = sprintf('\t%d. %d', P, s);
         disp(to_disp)
     end
 
@@ -98,8 +98,6 @@ for s = 1:num_reals
     combination = zeros(1,2);
     while(iter <= numIter)
         iter = iter+1;
-        R_vs_iter(s, iter, alpha_idx) = sum(rate(NC, NU, HH, vs, nvar), 'all'); % the sum rate
-        WR_vs_iter(s, iter, alpha_idx)= sum(Wrate(NC, NU, HH, vs, alpha, nvar), 'all'); % the sum weighted rate
         ppp(s, iter) = vs(1, 1); % ???
 
         % update what follows for the complex v !!!
@@ -149,6 +147,10 @@ for s = 1:num_reals
                 combination(2) = combination(2) +1; % I have no idea :-)
             end
         end
+        
+        % calculate the rate after computing the powers.
+        R_vs_iter(s, iter, alpha_idx) = sum(rate(NC, NU, HH, vs, nvar), 'all'); % the sum rate
+        WR_vs_iter(s, iter, alpha_idx)= sum(Wrate(NC, NU, HH, vs, alpha, nvar), 'all'); % the sum weighted rate
 
         % check if the algorithm comverges.
         vold = vnew;
@@ -211,11 +213,11 @@ for s = 1:num_reals
     Powers(:,:,s) = vs;
         
 end
-% file_name = sprintf('WMMSE_for_powers/WMMSE_%dx%dpower%dalpha%d.mat', NC, NU, P, alpha_idx);
-% save(file_name, 'Powers', 'conv', 'R_sums', 'Rmax_sums', 'WR_sums', 'WRmax_sums', 'tdma_rates');
+file_name = sprintf('WMMSE_for_NU/WMMSE_%dx%dpower%dalpha%dabs.mat', NC, NU, P, alpha_idx);
+save(file_name, 'Powers', 'conv', 'R_sums', 'Rmax_sums', 'WR_sums', 'WRmax_sums', 'tdma_rates');
 
-end
+% end
 
-file_name = sprintf('WMMSE_for_conv/WMMSE_%dx%dpower%dabs.mat', NC, NU,P);
-save(file_name, "conv", "WR_vs_iter", "R_vs_iter");
+% file_name = sprintf('WMMSE_for_NU/WMMSE_%dx%dpower%dabs.mat', NC, NU,P);
+% save(file_name, "conv", "WR_vs_iter", "R_vs_iter");
 

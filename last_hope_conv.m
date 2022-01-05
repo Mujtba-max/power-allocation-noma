@@ -14,12 +14,12 @@ alpha_rng = [1,alpha_rng_length]; % the range of the alpha computation indices
 seed = 1;
 
 %% system model
-% Load the presaved channel parameters.
-% fileName = sprintf('channels_for_NU/Channels%dx%dpower%d.mat', NC, NU, P);
-% load(fileName,'H', 'in', 'D'); 
-% last_hope
+% load the presaved channel parameters.
+fileName = sprintf('channels_for_NU/Channels%dx%dpower%d.mat', NC, NU, P);
+load(fileName,'H', 'in', 'D'); 
+last_hope
 %%
-file_name = sprintf('WMMSE_for_conv/WMMSE_%dx%dpower%dabs.mat', NC, NU,P);
-load(file_name, "conv", "WR_vs_iter");
+% file_name = sprintf('WMMSE_for_conv/WMMSE_%dx%dpower%dabs.mat', NC, NU,P);
+% load(file_name, "conv", "WR_vs_iter");
 
 plot_conv(alpha_rng, conv, WR_vs_iter);
