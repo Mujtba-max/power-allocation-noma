@@ -1,5 +1,6 @@
 alpha_rng_length = 10; % number of alpha values to compute.
 NU = 10; % #USers in each cell.
+NC = 4;
 nvar = 1.9905e-08; % Noise Variance ?????
 epsilon = 1e-5; % For convergence test.
 inner_radius = 500; 
