@@ -7,7 +7,7 @@ Cell.Ncell      = Num_of_cell;   % number of coordinated cells
 Cell.Nintra     = Num_of_user_in_each_cell;   % number of cell-intra users
 %Cell.Rcell      = inner_radius*2/sqrt(3); % cell radius   %%??? %% By seeing the Layout.m file, it seems like Distance is the half distance between the centers of two adjasent cells.?? but why sqrt(3)???
 Cell.Rcell      = inner_radius; % cell radius   %%??? %% By seeing the Layout.m file, it seems like Distance is the half distance between the centers of two adjasent cells.?? but why sqrt(3)???
-Layout_copy; % Layout of cells
+cells_layout; % Layout of cells
 
 % If consider cellular environment, generate the corresponding channel matrix
 MS = usergenerator(Cell, minR_ratio, d, t); %Rcellmin    = minR_ratio*Cell.Rcell;

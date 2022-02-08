@@ -1,4 +1,5 @@
 function R = rate(NC, NU, H, v, nvar)
+  "computes the NOMA rates"
 R = zeros(NU, NC);
 intra = 0;
 for c = 1:NC

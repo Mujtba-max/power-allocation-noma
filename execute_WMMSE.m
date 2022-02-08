@@ -4,22 +4,6 @@
 Pmax = 10^(P/10); % Maximum power for each cell.
 Pm = Pmax*ones(1,NC);
 
-    %%%%% Ali from the future: What are these comments below???
-    
-% n = zeros(1,NC);
-% for c=1:NC
-%     a = find(in(:,c)==1);
-%     n(c)= length(a);
-% end
-% 
-% num_reals = min(n);
-% 
-% for c=1:NC
-%     a = find(in(:,c)==1);
-%     h(:,c,:,:) = H(:,c,:,a(1:num_reals));
-%     d(:,c,:,:) = D(:,c,:,a(1:num_reals));
-% end
-
 h = zeros(NU,NC,NC,num_reals);
 d = zeros(NU,NC,NC,num_reals);
 
@@ -43,14 +27,13 @@ for c=1:NC
 end
 R_vs_iter = zeros(num_reals, numIter, alpha_rng_length);
 WR_vs_iter= zeros(num_reals, numIter, alpha_rng_length);
-ppp = zeros(num_reals, numIter);
 
 % The (numIter -1) scalling factor is for the case where the convergence
 % condition not satisfied, so this channel takes the maximum number of
 % iterations (minus 1, to avoid errors after the while loop).
 conv= (numIter -1) * ones(alpha_rng_length,num_reals);
  
-% for alpha_idx = alpha_rng
+for alpha_idx = alpha_rng
 Powers = zeros(NU,NC,num_reals);
 for s = 1:num_reals
         
@@ -71,7 +54,7 @@ for s = 1:num_reals
     A = zeros(NU, NC);     % An intermediate variable.
     lambda = zeros(1, NC); % The Lagrange multipliers
 
-    v_init = sqrt(Pmax*rand(NU,NC)); % Initialize v's randomly?
+    v_init = sqrt(Pmax*rand(NU,NC)); % Initialize v's randomly
     vs = v_init;
     
     % Calculating the corresponding (initial ?) values of g & w for all users in all cells.
@@ -95,10 +78,8 @@ for s = 1:num_reals
     end
 
     vnew = 0; vold = 0; iter=0;
-    combination = zeros(1,2);
     while(iter <= numIter)
         iter = iter+1;
-        ppp(s, iter) = vs(1, 1); % ???
 
         % update what follows for the complex v !!!
         
@@ -122,15 +103,13 @@ for s = 1:num_reals
             end
             compPower = sum(abs(vs(:,c)).^2) - Pm(c); % must be <= 0, for lambda = 0.
             
-            if compPower <= 0
-                combination(1) = combination(1) +1; % I don't know what is this :-)
-            else
+            if compPower > 0
                 l = bisection(Pmax, A, h(:, :, :, s), g, inter, c, NU); % Finding lambda using bisection search.
                 if numel(l(l>=0)) > 1
                     error("numel(lambda(c))> 1");
                 end
                 if numel(l(l>=0)) == 0
-                    "there is no lambda that satisfies the KKT conditions for this iteration and this cell." %%???
+                    "there is no lambda that satisfies the KKT conditions for this iteration and this cell." %%!
                     error("numel(lambda(c))== 0");
                 end
                 
@@ -140,11 +119,9 @@ for s = 1:num_reals
                 end
 
                 compPower = sum(abs(vs(:,c)).^2) - Pm(c) ; % <= 0
-                if abs(compPower) > 1e-7 % why  1e-7 ??
+                if abs(compPower) > 1e-7
                     error("the solution of the quatric equation is wrong!");
                 end
-
-                combination(2) = combination(2) +1; % I have no idea :-)
             end
         end
         
@@ -184,15 +161,13 @@ for s = 1:num_reals
     WR_vs_iter(s, conv(alpha_idx, s)+1:end, alpha_idx) = WR_vs_iter(s, conv(alpha_idx, s), alpha_idx);
 
     R = rate(NC, NU, HH, vs, nvar);
-    Rmax = rate(NC, NU, HH, v_init, nvar); % what is this?
+    Rmax = rate(NC, NU, HH, v_init, nvar);
     
     WR = Wrate(NC, NU, HH, vs, alpha, nvar);
-    WRmax = Wrate(NC, NU, HH, v_init, alpha, nvar);% what is this?
+    WRmax = Wrate(NC, NU, HH, v_init, alpha, nvar);
     
     tdma_rate = tdmaRates(NC,NU,HH,alpha,Pmax,nvar);
 
-%     MSE    = MMSE(NC, NU, HH, vs, alpha, g, w, nvar);
-%     MSE_max = MMSE(NC, NU, HH, v_init, alpha, g, w, nvar);
 
     R_sum    = sum(R   , 'all');
     Rmax_sum = sum(Rmax, 'all');
@@ -210,14 +185,20 @@ for s = 1:num_reals
     
     tdma_rates(s) = tdma_sum;
     
-    Powers(:,:,s) = vs;
-        
+    Powers(:,:,s) = vs; 
 end
-file_name = sprintf('WMMSE_for_NU/WMMSE_%dx%dpower%dalpha%dabs.mat', NC, NU, P, alpha_idx);
-save(file_name, 'Powers', 'conv', 'R_sums', 'Rmax_sums', 'WR_sums', 'WRmax_sums', 'tdma_rates');
 
-% end
+if (executedFrom == 'RvsNU')
+    file_name = sprintf('WMMSE_for_NU/WMMSE_%dx%dpower%dalpha%dabs.mat', NC, NU, P, alpha_idx);
+elseif (executedFrom == 'RvsPm')
+    file_name = sprintf('WMMSE_for_powers/WMMSE_%dx%dpower%dalpha%dabs.mat', NC, NU, P, alpha_idx);
+    save(file_name, 'Powers', 'conv', 'R_sums', 'Rmax_sums', 'WR_sums', 'WRmax_sums', 'tdma_rates');
+end
 
-% file_name = sprintf('WMMSE_for_NU/WMMSE_%dx%dpower%dabs.mat', NC, NU,P);
-% save(file_name, "conv", "WR_vs_iter", "R_vs_iter");
+end
+
+if (executedFrom == 'conv')
+    file_name = sprintf('WMMSE_for_conv/WMMSE_%dx%dpower%dabs.mat', NC, NU,P);
+    save(file_name, "conv", "WR_vs_iter");
+end
 

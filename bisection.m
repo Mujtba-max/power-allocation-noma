@@ -1,6 +1,6 @@
 function lambda = bisection(Pm, A, h, g, inter, c, NU)
   %%% why are you passing NU?? it is the first dimension of h, g, and A.
-  %%% why are you passing c?? why not just pass pm(c), A(:, c), ... etc.?
+  %%% why are you passing c?? why not just pass Pm(c), A(:, c), ... etc.?
     lambda = 0;
     start_point = 0;
     end_point = 100;
@@ -16,7 +16,6 @@ function lambda = bisection(Pm, A, h, g, inter, c, NU)
     end
 
     while true
-    %     pause(1);
         lambda = (end_point+start_point)/2;
         s = sum_power(lambda,A, h, g, inter, c, NU);
         if abs(s-Pm) < 1e-7
@@ -31,7 +30,7 @@ function lambda = bisection(Pm, A, h, g, inter, c, NU)
 end
 
 function s = sum_power(lambda,A, h, g, inter, c, NU)
-    vs = zeros(size(h,1),1); % what is this size??
+    vs = zeros(size(h,1),1);
     for u=1:NU
         vs(u) = conj( A(u, c) * h(u, c, c) ) / (sum(A(u:NU, c) .* conj(g(u:NU, c)).*abs(h(u:NU,c,c)).^2) + inter + lambda);
     end
