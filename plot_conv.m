@@ -20,8 +20,8 @@ function [] = plot_conv(alpha_rng, conv, WR_vs_iter)
   markers = 'm<-bo-'; % شنهي هاي
 %   maxNIter = max(conv(alpha_idx, S(S>0)))
   figure; hold on; grid on;
-  	  plot(0:maxNIter/2, WR_vs_iter(S(1 ), 1:maxNIter/2+1, 1), 'm<-', 'linewidth', 2)
-      plot(0:maxNIter/2, WR_vs_iter(S(10), 1:maxNIter/2+1, 10), 'ro-', 'linewidth', 2)
+  	  plot(0:20, WR_vs_iter(S(1 ), 1:20+1, 1), 'm<-', 'linewidth', 4)
+      plot(0:20, WR_vs_iter(S(10), 1:20+1, 10), 'ro-', 'linewidth', 4)
 %     plot(0:maxNIter/2, WR_vs_iter(S(3), 1:maxNIter/2+1, 3), 'b<-', 'linewidth', 1)
 %     plot(0:maxNIter/2, WR_vs_iter(S(4), 1:maxNIter/2+1, 4), 'ko-','linewidth', 1)
 %     plot(0:maxNIter/2, WR_vs_iter(S(5), 1:maxNIter/2+1, 5), 'g<-', 'linewidth', 1)
@@ -37,7 +37,7 @@ function [] = plot_conv(alpha_rng, conv, WR_vs_iter)
 % plot(0:20, RR_max(1, :), 'ks-.', 'linewidth',2);
 % plot(0:20, tdma(1, :), 'gd--', 'linewidth',2);
   
-  xlabel("number of iterations", 'FontSize', 15);
-  ylabel("Weighted sum rate", 'FontSize', 15);
-  legend('distance-based alpha', 'uniform alpha', 'FontSize', 15);
+  xlabel("number of iterations", 'FontSize', 20);
+  ylabel("Weighted sum rate", 'FontSize', 20);
+  legend('distance-based alpha', 'uniform alpha', 'FontSize', 20);
 end

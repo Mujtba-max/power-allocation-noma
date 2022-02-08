@@ -53,8 +53,8 @@ for alpha_idx = alpha_rng
 end
 
 figure; hold on; grid on;
-plot(0:20, RR(10, :),'m<-', 'linewidth',2);
-plot(0:20, RR(1, :), 'bo-', 'linewidth',2);
+plot(0:20, RR(10, :),'m<-', 'linewidth',4);
+plot(0:20, RR(1, :), 'bo-', 'linewidth',4);
 % plot(0:20, RR(2, :), 'bo--', 'linewidth',2);
 % plot(0:20, RR(3, :), 'r*-', 'linewidth',2);
 % plot(0:20, RR(4, :), 'r*--', 'linewidth',2);
@@ -65,13 +65,13 @@ plot(0:20, RR(1, :), 'bo-', 'linewidth',2);
 % plot(0:20, RR(9, :), 'm<-', 'linewidth',2);
 
 
-plot(0:20, RR_max(1, :), 'ks-.', 'linewidth',2);
-plot(0:20, fdma(1, :), 'gd--', 'linewidth',2);
+plot(0:20, RR_max(1, :), 'ks-.', 'linewidth',4);
+plot(0:20, fdma(1, :), 'gd--', 'linewidth',4);
 
-xlabel('Maximum power for each BS (dBW)', 'FontSize', 15);
-ylabel('Sum rate (bits/s/Hz)', 'FontSize', 15);
+xlabel('Maximum power for each BS (dBW)', 'FontSize', 20);
+ylabel('Sum rate (bits/s/Hz)', 'FontSize', 20);
 
-legend('uniformly-distributed-alpha WMMSE', 'distance-based-alpha WMMSE', 'uniform power allocation', 'OMA', 'FontSize', 15);
+legend('uniformly-distributed-alpha WMMSE', 'distance-based-alpha WMMSE', 'uniform power allocation', 'OMA', 'FontSize', 20);
 
 
 

@@ -8,7 +8,7 @@ numIter = 2000;
 num_reals = 1000;
 alpha_rng = [1, alpha_rng_length];
 seed = 1;
-fontSize = 15;
+fontSize = 20;
 
 clear RR RR_max WRR WRR_max convv;
 figure;
@@ -44,16 +44,18 @@ for NC=4:6
     %         convv(NU) = mean(conv); 
         end
         if (alpha_idx == 1)
-            plot(2:20, RR(2:20), 'm<-', 'linewidth',1);
+            plot(2:20, RR(2:20), 'bo-', 'linewidth',2);
         elseif (alpha_idx == 10)
-            plot(2:20, RR(2:20), 'bo-', 'linewidth',1);
+            plot(2:20, RR(2:20), 'm<-', 'linewidth',2);
         end
     end
 % 
-    plot(2:20, RR_max(2:20), 'ks-.', 'linewidth',1);
-    plot(2:20, tdma(2:20), 'gd--', 'linewidth',1);
+    plot(2:20, RR_max(2:20), 'ks-.', 'linewidth',2);
+    plot(2:20, tdma(2:20), 'gd--', 'linewidth',2);
 end
-legend('distance-based alpha', 'uniformly distributed alpha', 'uniform power allocation', 'OMA', 'FontSize', fontSize);
+
+legend('distance-based-alpha WMMSE', 'uniformly-distributed-alpha WMMSE', 'uniform power allocation', 'OMA', 'FontSize', 20);
+
 % plot(2:20, convv);
 
 % NC = 2;
