@@ -15,11 +15,11 @@ seed = 1;
 for P=0:P_max_idx
     fileName1  = sprintf('WMMSE_for_powers/WMMSE_%dx%dpower%dalpha%dabs.mat', NC, NU,P, 1 );
     fileName10 = sprintf('WMMSE_for_powers/WMMSE_%dx%dpower%dalpha%dabs.mat', NC, NU,P, 10);
-    if (~exist(fileName1, 'file') | ~exist(fileName10, 'file'))
+    if (~exist(fileName1, 'file') || ~exist(fileName10, 'file'))
     clear H in D;
     fileName = sprintf('channels_for_powers/Channels%dx%dpower%d.mat', NC, NU, P);
     load(fileName,'H', 'in', 'D'); 
-    executedFrom = 'RvsPm';
+    executedFrom = '2';
     execute_WMMSE
     end
 end

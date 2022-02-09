@@ -188,16 +188,17 @@ for s = 1:num_reals
     Powers(:,:,s) = vs; 
 end
 
-if (executedFrom == 'RvsNU')
+if (executedFrom == '3')
     file_name = sprintf('WMMSE_for_NU/WMMSE_%dx%dpower%dalpha%dabs.mat', NC, NU, P, alpha_idx);
-elseif (executedFrom == 'RvsPm')
+    save(file_name, 'Powers', 'conv', 'R_sums', 'Rmax_sums', 'WR_sums', 'WRmax_sums', 'tdma_rates');
+elseif (executedFrom == '2')
     file_name = sprintf('WMMSE_for_powers/WMMSE_%dx%dpower%dalpha%dabs.mat', NC, NU, P, alpha_idx);
     save(file_name, 'Powers', 'conv', 'R_sums', 'Rmax_sums', 'WR_sums', 'WRmax_sums', 'tdma_rates');
 end
 
 end
 
-if (executedFrom == 'conv')
+if (executedFrom == '1')
     file_name = sprintf('WMMSE_for_conv/WMMSE_%dx%dpower%dabs.mat', NC, NU,P);
     save(file_name, "conv", "WR_vs_iter");
 end

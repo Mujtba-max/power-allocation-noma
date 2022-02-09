@@ -13,14 +13,15 @@ fontSize = 15;
 % generate and save the data if not exist
 for NC=4:6
     for NU=2:20
-       fileName1  = sprintf('WMMSE_for_powers/WMMSE_%dx%dpower%dalpha%dabs.mat', NC, NU,P, 1 );
-       fileName10 = sprintf('WMMSE_for_powers/WMMSE_%dx%dpower%dalpha%dabs.mat', NC, NU,P, 10);
-       if (~exist(fileName1, 'file') | ~exist(fileName10, 'file'))
-       clear H  in D;
-       fileName = sprintf('channels_for_NU/Channels%dx%dpower%d.mat', NC, NU, P);
-       load(fileName,'H', 'in', 'D');
-       executedFrom = 'RvsNU';
-       execute_WMMSE
+       fileName1  = sprintf('WMMSE_for_NU/WMMSE_%dx%dpower%dalpha%dabs.mat', NC, NU,P, 1 );
+       fileName10 = sprintf('WMMSE_for_NU/WMMSE_%dx%dpower%dalpha%dabs.mat', NC, NU,P, 10);
+       if (~exist(fileName1, 'file') || ~exist(fileName10, 'file'))
+           clear H  in D;
+           fileName = sprintf('channels_for_NU/Channels%dx%dpower%d.mat', NC, NU, P);
+           load(fileName,'H', 'in', 'D');
+           executedFrom = '3';
+           execute_WMMSE
+       end
     end
 end
 

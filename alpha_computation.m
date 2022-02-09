@@ -1,5 +1,5 @@
 function alpha = alpha_computation(HH, dd, NU, NC, alpha_idx)
-"computes the wieghts (alpha) in different ways acording to the [alpha_idx]"
+%%% computes the wieghts (alpha) in different ways acording to the [alpha_idx]
 
 % distance-based alpha
 if alpha_idx ==1

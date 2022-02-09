@@ -21,7 +21,7 @@ if (exist(file_name, 'file'))
 else
     channelsFileName = sprintf('channels_for_NU/Channels%dx%dpower%d.mat', NC, NU, P);
     load(channelsFileName,'H', 'in', 'D'); 
-    executedFrom = 'conv';
+    executedFrom = '1';
     execute_WMMSE
 end
 
