@@ -16,7 +16,7 @@ for Pmax = 0:20
 for NC = 4:6
 for NU = 2:20
   %execute only if:
-  if( (NC == 4 & NU == 10) | (Pmax == 16 & (NC ~= 4 | NU ~= 10)) )
+  if( (Pmax == 16) || (NC == 4 && NU == 10) )
     disp(Pmax);
     A = zeros(NC,NU,2,NS);
     R = inner_radius - minR_ratio*inner_radius;      % effective cell radius
@@ -51,7 +51,7 @@ for NU = 2:20
         file_name = sprintf('channels_for_NU/Channels%dx%dpower%d.mat', NC, NU, Pmax);
         save(file_name, 'H', 'in','D', 'nvar');
     end
-    if (NC == 4 & NU == 10)
+    if (NC == 4 && NU == 10)
         file_name = sprintf('channels_for_powers/Channels%dx%dpower%d.mat', NC, NU, Pmax);
         save(file_name, 'H', 'in','D', 'nvar');
     end
